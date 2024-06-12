@@ -1,0 +1,126 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    height: 100%;
+    width: 80%;
+    margin: 0 10%;
+    padding-top: 8vh;
+    background-color: #F0F0F0;
+}
+
+.documents {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+}
+
+.micro-btn-div {
+    display: flex;
+    position: relative;
+    flex-direction: row;
+    width: 40%;
+    justify-content: center;
+}
+
+.micro-btn {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    color: #42AAFF;
+    border: 2px solid #42AAFF;
+    background-color: white;
+    border-radius: 10px;
+    height: auto;
+    margin: 10px;
+    font: 16px;
+    font-weight: bold;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    transition: background-color .3s, color .3s;
+}
+
+.micro-btn:hover {
+    background-color: #42AAFF;
+    color: white;
+}
+
+.micro-btn-red {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    color: #E32636;
+    border: 2px solid #E32636;
+    background-color: white;
+    border-radius: 10px;
+    height: auto;
+    margin: 10px;
+    font: 16px;
+    font-weight: bold;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    transition: background-color .3s, color .3s;
+}
+
+.micro-btn-red:hover {
+    background-color: #E32636;
+    color: white;
+}
+
+.document {
+    flex-basis: calc(98% / 3);
+    /* Ограничиваем каждый элемент до 1/3 ширины контейнера */
+    max-width: calc(98% / 3);
+    /* Ограничиваем максимальную ширину каждого элемента */
+    box-sizing: border-box;
+    margin: calc(6% / 3);
+    background-color: white;
+    border: 2px solid #c0c0c0;
+    border-radius: 10px;
+}
+
+.right-doc {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: right;
+}
+
+.midle-doc {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+}
+
+.right-p {
+    margin: 4px;
+    text-align: right;
+}
+
+.left-p {
+    margin: 4px;
+    text-align: left;
+}
+
+.midle-p {
+    margin: 4px;
+    text-align: center;
+}
+
+span {
+    word-wrap: break-word;
+    /* Для браузеров, которые поддерживают свойство word-wrap */
+    overflow-wrap: break-word;
+    /* Для браузеров, которые поддерживают свойство overflow-wrap */
+}

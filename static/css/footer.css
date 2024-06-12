@@ -1,0 +1,137 @@
+* {
+    font-family: "Roboto", sans-serif;
+    font-size: 16px;
+}
+
+canvas {
+    display: flex;
+    height: 125;
+    width: 250;
+    align-self: stretch;
+    border: 1px solid #F0F0F0;
+    margin: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.p-status {
+    width: 250;
+    font-size: 20;
+    color: gray;
+}
+
+.div-audio {
+    display: flex;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border-top: 2px solid #c0c0c0;
+    border-radius: 10px;
+    height: 10vh;
+    background-color: #F0F0F0;
+    margin: 0;
+}
+
+.document-btn-div {
+    display: flex;
+    position: relative;
+    flex-direction: row;
+    width: 45%;
+    justify-content: end;
+    align-items: center;
+}
+
+.btn1 {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    color: #42AAFF;
+    border: 2px solid #42AAFF;
+    background-color: white;
+    border-radius: 10px;
+    height: auto;
+    margin: 0 10px;
+    font: 16px;
+    font-weight: bold;
+    padding: 5px;
+    transition: background-color .3s, color .3s;
+}
+
+.btn1:hover {
+    background-color: #42AAFF;
+    color: white;
+}
+
+.btn2 {
+    color: #ff6700;
+    border: 2px solid #ff6700;
+    background-color: white;
+    border-radius: 10px;
+    font: 16px;
+    font-weight: bold;
+    padding: 10px;
+    transition: background-color .3s, color .3s;
+}
+
+.btn2:hover {
+    background-color: #ff6700;
+    color: white;
+}
+
+.mic-buttons {
+    display: flex;
+    position: relative;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    width: 45%;
+    margin: 10px;
+}
+
+.sound-btn-on {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    border: 2px solid #42AAFF;
+    border-radius: 10px;
+    height: 40px;
+    width: 275px;
+    font-weight: bold;
+    /* background-color: #44944A; */
+    background-color: #F0F0F0;
+    color: #42AAFF;
+    margin: 3px;
+    transition: background-color .3s, color .3s;
+}
+
+.sound-btn-on:hover {
+    background-color: #42AAFF;
+    color: white;
+}
+
+.sound-btn-off {
+    display: flex;
+    position: relative;
+    justify-content: start;
+    align-items: center;
+    border: 2px solid #E32636;
+    border-radius: 10px;
+    height: 40px;
+    font-weight: bold;
+    width: 275px;
+    /* background-color: #44944A; */
+    background-color: #F0F0F0;
+    color: #E32636;
+    margin: 3px;
+    transition: background-color .3s, color .3s;
+}
+
+.sound-btn-off:hover {
+    background-color: #E32636;
+    color: white;
+}

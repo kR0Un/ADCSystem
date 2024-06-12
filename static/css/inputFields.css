@@ -1,0 +1,101 @@
+.input-fields {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    background-color: white;
+    margin: 0;
+}
+
+.left-input-fields {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    align-items: center;
+    width: 50%;
+    background-color: white;
+}
+
+.right-input-fields {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    align-items: center;
+    width: 50%;
+    background-color: white;
+}
+
+.input-field-main {
+    width: 350px;
+    margin: 10px 0;
+    position: relative;
+}
+
+.input-field {
+    width: 100%;
+    height: 50px;
+    padding: 10px 0px 5px 5px;
+    border-radius: 10px;
+    border: 1px solid rgb(184, 181, 181);
+    outline: none;
+    font-size: 16px;
+    transition: border .2s;
+}
+
+.input-field:focus {
+    border: 2px solid rgb(116, 115, 115);
+}
+
+.input-field-warning {
+    width: 100%;
+    height: 50px;
+    padding: 10px 0px 5px 5px;
+    border-radius: 10px;
+    border: 1px solid #E32636;
+    outline: none;
+    font-size: 16px;
+    transition: border .2s;
+}
+
+.input-field-warning:focus {
+    border: 2px solid #E32636;
+}
+
+.input-field-placeholder {
+    display: block;
+    position: absolute;
+    top: 12px;
+    left: 5px;
+    color: rgb(159, 159, 159);
+    font-size: 16px;
+    pointer-events: none;
+    transform-origin: left;
+    transition: top .3s, transform .3s, color .3s;
+}
+
+.input-field:focus+.input-field-placeholder,
+.input-field:not(:focus):valid+.input-field-placeholder {
+    top: -1px;
+    transform: scale(.8);
+    color: rgb(116, 115, 115);
+}
+
+.input-field-placeholder-warning {
+    display: block;
+    position: absolute;
+    top: 12px;
+    left: 5px;
+    color: #E32636;
+    font-size: 16px;
+    pointer-events: none;
+    transform-origin: left;
+    transition: top .3s, transform .3s, color .3s;
+}
+
+.input-field-warning:focus+.input-field-placeholder-warning,
+.input-field-warning:not(:focus):valid+.input-field-placeholder-warning {
+    top: -1px;
+    transform: scale(.8);
+    color: #E32636;
+}
