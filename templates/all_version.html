@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/all_version.css') }}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/spechRecognize.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/microphoneVisualization.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/documentVersion.js') }}" defer></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/updateDocument.js') }}" defer></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/logout.js') }}" defer></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/docxUpdateVisualization.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/validateDataForDoc1.js') }}" defer></script>
+    <title>Система автоматизированного заполнения документов</title>
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-book" viewBox="0 0 16 16">
+                <path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783"/>
+            </svg>
+        </div>
+        <div class="menu">
+            <a href="/main" class="a-menu">Создать</a>
+            <a href="/all_documents" class="a-menu">Мои Документы</a>{%if user.position=="admin"%}
+            <a href="/admin" class="a-menu">Журнал действий</a> {%else%}
+            <a href="#" class="a-menu">Задания</a> {% endif %}
+        </div>
+
+        <div class="sign-in">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
+                <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
+              </svg>
+            <p class="p-user-name">{{user.user_name}}</p>
+            <button class="sign-in-btn" id="logout-btn">Выйти</button>
+        </div>
+    </header>
+    <div class="main">
+        <div class="back-btn">
+            <button class="btn1" id="back-document-btn" data-document-id="{{version.document_id}}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor" class="bi bi-caret-left" viewBox="0 0 16 16">
+                    <path d="M10 12.796V3.204L4.519 8zm-.659.753-5.48-4.796a1 1 0 0 1 0-1.506l5.48-4.796A1 1 0 0 1 11 3.204v9.592a1 1 0 0 1-1.659.753"/>
+                  </svg>
+                <p style="padding: 0; margin: 0;">Перейти к документу</p>
+            </button>
+        </div>
+        <div class="version-div">
+            {% for version in versions %}
+            <div class="btn-div"></div>
+            <button id="version-btn-{{version.version}}" class="version-btn" data-version="{{version.version}}" data-document-id="{{version.document_id}}">
+                <p>Номер версии: {{version.version}}</p>
+                <p>Дата изменения: {{version.version_date|format_datetime}}</p>
+            </button>
+            <button class="btn btn-danger" onclick="DownloadDocument('{{ version.document_name }}', '{{ version.judge }}', '{{ version.fio_applicant }}', '{{ version.address_applicant }}', '{{ version.phone_applicant }}', '{{ version.fio_defendant }}', '{{ version.address_defendant }}', '{{ version.phone_defendant }}', '{{ version.fio_representative }}', '{{ version.address_representative }}', '{{ version.phone_representative }}', '{{ version.cost_lawsuit }}', '{{ version.about_lawsuit }}', '{{ version.content_lawsuit }}', '{{ version.judge_request }}', '{{ version.application }}', '{{ version.date }}')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-filetype-docx" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M14 4.5V11h-1V4.5h-2A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v9H2V2a2 2 0 0 1 2-2h5.5zm-6.839 9.688v-.522a1.5 1.5 0 0 0-.117-.641.86.86 0 0 0-.322-.387.86.86 0 0 0-.469-.129.87.87 0 0 0-.471.13.87.87 0 0 0-.32.386 1.5 1.5 0 0 0-.117.641v.522q0 .384.117.641a.87.87 0 0 0 .32.387.9.9 0 0 0 .471.126.9.9 0 0 0 .469-.126.86.86 0 0 0 .322-.386 1.55 1.55 0 0 0 .117-.642m.803-.516v.513q0 .563-.205.973a1.47 1.47 0 0 1-.589.627q-.381.216-.917.216a1.86 1.86 0 0 1-.92-.216 1.46 1.46 0 0 1-.589-.627 2.15 2.15 0 0 1-.205-.973v-.513q0-.569.205-.975.205-.411.59-.627.386-.22.92-.22.535 0 .916.22.383.219.59.63.204.406.204.972M1 15.925v-3.999h1.459q.609 0 1.005.235.396.233.589.68.196.445.196 1.074 0 .634-.196 1.084-.197.451-.595.689-.396.237-.999.237zm1.354-3.354H1.79v2.707h.563q.277 0 .483-.082a.8.8 0 0 0 .334-.252q.132-.17.196-.422a2.3 2.3 0 0 0 .068-.592q0-.45-.118-.753a.9.9 0 0 0-.354-.454q-.237-.152-.61-.152Zm6.756 1.116q0-.373.103-.633a.87.87 0 0 1 .301-.398.8.8 0 0 1 .475-.138q.225 0 .398.097a.7.7 0 0 1 .273.26.85.85 0 0 1 .12.381h.765v-.073a1.33 1.33 0 0 0-.466-.964 1.4 1.4 0 0 0-.49-.272 1.8 1.8 0 0 0-.606-.097q-.534 0-.911.223-.375.222-.571.633-.197.41-.197.978v.498q0 .568.194.976.195.406.571.627.375.216.914.216.44 0 .785-.164t.551-.454a1.27 1.27 0 0 0 .226-.674v-.076h-.765a.8.8 0 0 1-.117.364.7.7 0 0 1-.273.248.9.9 0 0 1-.401.088.85.85 0 0 1-.478-.131.83.83 0 0 1-.298-.393 1.7 1.7 0 0 1-.103-.627zm5.092-1.76h.894l-1.275 2.006 1.254 1.992h-.908l-.85-1.415h-.035l-.852 1.415h-.862l1.24-2.015-1.228-1.984h.932l.832 1.439h.035z"/>
+                </svg>   
+            </button> {% endfor %}
+        </div>
+        <div class="vertical-line"></div>
+        <div class="doc">
+            <div class="right-doc">
+                <p class="right-p"><span id="judge_span" style="font-weight:bold" class="right-span">{{ version.judge }}</span></p>
+                <p class="right-p"><span style="font-weight:bold">Истец: </span> <span id="fio_applicant_span">{{ version.fio_applicant }}</span></p>
+                <p class="right-p"><span id="address_applicant_span">{{ version.address_applicant }}</span></p>
+                <p class="right-p"><span id="phone_applicant_span">{{ version.phone_applicant }}</span></p>
+                <p class="right-p"><span style="font-weight:bold">Ответчик: </span> <span id="fio_defendant_span">{{ version.fio_defendant }}</span></p>
+                <p class="right-p"><span id="address_defendant_span">{{ version.address_defendant }}</span></p>
+                <p class="right-p"><span id="phone_defendant_span">{{ version.phone_defendant }}</span></p>
+                <p class="right-p"><span style="font-weight:bold">Представитель: </span> <span id="fio_representative_span">{{ version.fio_representative }}</span></p>
+                <p class="right-p"><span id="address_representative_span">{{ version.address_representative }}</span></p>
+                <p class="right-p"><span id="phone_representative_span">{{ version.phone_representative }}</span></p>
+                <p class="right-p">Цена иска: <span id="cost_lawsuit_span">{{ version.cost_lawsuit }}</span></p>
+            </div>
+            <div class="midle-doc">
+                <p><span style="font-weight:bold">ИСКОВОЕ ЗАЯВЛЕНИЕ</span></p>
+                <p class="center-p"><span id="about_lawsuit_span" style="font-weight:bold">{{ version.about_lawsuit }}</span></p>
+                <p class="left-p"><span id="content_lawsuit_span">{{ version.content_lawsuit }}</span></p>
+                <p><span style="font-weight:bold">ПРОШУ</span><span style="font-weight:bold">:</span></p>
+                <p class="left-p"><span id="judge_request_span">{{ version.judge_request }}</span></p>
+                <p>Приложение:</p>
+                <p class="left-p"><span id="application_span">{{ version.application }}</span></p>
+            </div>
+            <div class="right-doc">
+                <p>____________________________/___________________/</p>
+                <p><span id="date_span">{{ version.date }}</span> г.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Находим все кнопки с классом 'version-btn'
+            const versionButtons = document.querySelectorAll('.version-btn');
+
+            // Для каждой кнопки устанавливаем обработчик события click
+            versionButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Получаем значения атрибутов data-version и data-document-id
+                    const versionNumber = button.dataset.version;
+                    const documentId = button.dataset.documentId;
+
+                    // Формируем URL-адрес перенаправления
+                    const redirectUrl = `/get_version/${documentId}/${versionNumber}`;
+
+                    // Перенаправляем пользователя по указанному URL-адресу
+                    window.location.href = redirectUrl;
+                });
+            });
+
+            let btn = document.getElementById('back-document-btn')
+
+            btn.addEventListener('click', function() {
+                const documentId = btn.dataset.documentId;
+                window.location.href = '/document1/' + documentId
+            });
+
+            const urlParts = window.location.pathname.split('/');
+            const documentIdFromUrl = urlParts[urlParts.length - 1];
+
+            // Находим кнопку с соответствующим document_id и добавляем класс подсветки
+            const activeButton = document.getElementById(`version-btn-${documentIdFromUrl}`);
+            if (activeButton) {
+                activeButton.classList.remove('version-btn');
+                activeButton.classList.add('chouse-version-btn');
+            }
+        });
+
+        function DownloadDocument(document_name, judge, fio_applicant, address_applicant, phone_applicant, fio_defendant, address_defendant, phone_defendant, fio_representative, address_representative, phone_representative, cost_lawsuit, about_lawsuit, content_lawsuit, judge_request, application, date) {
+
+            const formData = {
+                document_name: document_name,
+                judge: judge,
+                fio_applicant: fio_applicant,
+                address_applicant: address_applicant,
+                phone_applicant: phone_applicant,
+                fio_defendant: fio_defendant,
+                address_defendant: address_defendant,
+                phone_defendant: phone_defendant,
+                fio_representative: fio_representative,
+                address_representative: address_representative,
+                phone_representative: phone_representative,
+                cost_lawsuit: cost_lawsuit,
+                about_lawsuit: about_lawsuit,
+                content_lawsuit: content_lawsuit,
+                judge_request: judge_request,
+                application: application,
+                date: date
+            };
+
+            fetch('/generate_doc', {
+                    method: 'POST',
+                    body: JSON.stringify(formData), // Преобразуем данные в формат JSON
+                    headers: {
+                        'Content-Type': 'application/json' // Указываем тип контента как JSON
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Ошибка сети');
+                    }
+                    console.log('Данные успешно отправлены на сервер'); // Логирование успешной отправки данных
+                    return response.blob();
+                })
+                .then(blob => {
+                    // Создаем URL для скачивания файла
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = 'document.docx';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    console.log('Файл скачан'); // Логирование успешного скачивания файла
+                })
+                .catch(error => {
+                    console.error('Ошибка:', error); // Логирование ошибок
+                });
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,247 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/inputFields.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/save_modal.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/footer.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/notification.css') }}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/spechRecognize.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/microphoneVisualization.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/createDocument.js') }}" defer></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/saveDocument.js') }}" defer></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/save_modal.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/logout.js') }}" defer></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/notification.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/docxUpdateVisualization.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/validateDataForDoc1.js') }}" defer></script>
+    <title>Система автоматизированного заполнения документов</title>
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-book" viewBox="0 0 16 16">
+                <path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783"/>
+            </svg>
+        </div>
+        <div class="menu">
+            <a href="/main" class="a-menu-chouse">Создать</a>
+            <a href="/all_documents" class="a-menu">Мои Документы</a>{%if user.position=="admin"%}
+            <a href="/admin" class="a-menu">Журнал действий</a> {%else%}
+            <a href="#" class="a-menu">Задания</a> {% endif %}
+        </div>
+
+        <div class="sign-in">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
+                <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
+              </svg>
+            <p class="p-user-name">{{user.user_name}}</p>
+            <button class="sign-in-btn" id="logout-btn">Выйти</button>
+        </div>
+    </header>
+
+    <div id="notification" class="notification">Некоторые данные введены не корректно!</div>
+    <div id="notification2" class="notification">Некоторые поля содержат не осмысленный текст!</div>
+
+
+    <div id="createModalWarning" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeCreateModalWarningBtn">&times;</span>
+            <p id="modal-doc-name" style="font-weight: bold; font-size: 18px; color:#E32636; text-align: center;">Не все поля заполненны вы уверенны что хотите скачать документ</p>
+            <button id="modalCreateDocButton" class="save-button">Скачать</button>
+        </div>
+    </div>
+
+    <div id="saveModalWarning" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeSaveModalWarningBtn">&times;</span>
+            <p id="modal-doc-name" style="font-weight: bold; font-size: 18px; color:#E32636; text-align: center;">Не все поля заполненны вы уверенны что хотите сохранить документ</p>
+            <button id="modalSaveDocButton" class="save-button">Сохранить</button>
+        </div>
+    </div>
+
+
+    <div class="main">
+        <div class="input-fields">
+            <div class="left-input-fields">
+                <div>
+                    <div class="input-field-main">
+                        <input class="input-field" id="doc-name" type="text" required value="Новый Документ">
+                        <label class="input-field-placeholder" id="placeholder-doc-name">Название документа</label>
+                        <label class="warning-label" id="error-doc-name">введите название документа</label>
+                    </div>
+                    <br>
+                    <div class="input-field-main">
+                        <input class="input-field" id="judge" type="text" required>
+                        <label class="input-field-placeholder" id="placeholder-judge">Наименование суда</label>
+                        <label class="warning-label" id="error-judge">введите наименование суда</label>
+                    </div>
+                </div>
+                <div>
+                    <p>Истец</p>
+                    <div class="input-field-main">
+                        <input class="input-field" id="fio_applicant" type="text" required>
+                        <label class="input-field-placeholder" id="placeholder-fio_applicant">ФИО</label>
+                        <label class="warning-label" id="error-fio_applicant">введите ФИО</label>
+                    </div>
+                    <div class="input-field-main">
+                        <input class="input-field" id="address_applicant" type="text" required>
+                        <label class="input-field-placeholder" id="placeholder-address_applicant">Адрес</label>
+                        <label class="warning-label" id="error-address_applicant">введите адрес</label>
+                    </div>
+                    <div class="input-field-main">
+                        <input class="input-field" id="phone_applicant" type="text" required>
+                        <label class="input-field-placeholder" id="placeholder-phone_applicant">Номер телефона</label>
+                        <label class="warning-label" id="error-phone_applicant">введите номер телефона</label>
+                    </div>
+                </div>
+                <div>
+                    <p>Ответчик</p>
+                    <div class="input-field-main">
+                        <input class="input-field" id="fio_defendant" type="text" required>
+                        <label class="input-field-placeholder" id="placeholder-fio_defendant">ФИО</label>
+                        <label class="warning-label" id="error-fio_defendant">введите ФИО</label>
+                    </div>
+                    <div class="input-field-main">
+                        <input class="input-field" id="address_defendant" type="text" required>
+                        <label class="input-field-placeholder" id="placeholder-address_defendant">Адрес</label>
+                        <label class="warning-label" id="error-address_defendant">введите адрес</label>
+                    </div>
+                    <div class="input-field-main">
+                        <input class="input-field" id="phone_defendant" type="text" required>
+                        <label class="input-field-placeholder" id="placeholder-phone_defendant">Номер телефона</label>
+                        <label class="warning-label" id="error-phone_defendant">введите номер телефона</label>
+                    </div>
+                </div>
+
+                <div>
+                    <p>Представитель</p>
+                    <div class="input-field-main">
+                        <input class="input-field" id="fio_representative" type="text" required>
+                        <label class="input-field-placeholder" id="placeholder-fio_representative">ФИО</label>
+                        <label class="warning-label" id="error-fio_representative">введите ФИО</label>
+                    </div>
+                    <div class="input-field-main">
+                        <input class="input-field" id="address_representative" type="text" required>
+                        <label class="input-field-placeholder" id="placeholder-address_representative">Адрес</label>
+                        <label class="warning-label" id="error-address_representative">введите адрес</label>
+                    </div>
+                    <div class="input-field-main">
+                        <input class="input-field" id="phone_representative" type="tel" required>
+                        <label class="input-field-placeholder" id="placeholder-phone_representative">Номер телефона</label>
+                        <label class="warning-label" id="error-phone_representative">введите номер телефона</label>
+                    </div>
+                </div>
+
+                <div class="input-field-main">
+                    <input class="input-field" id="cost_lawsuit" type="number" required max>
+                    <label class="input-field-placeholder" id="placeholder-cost_lawsuit">Цена иска</label>
+                    <label class="warning-label" id="error-cost_lawsuit">введите цену иска</label>
+                </div>
+            </div>
+
+            <div class="right-input-fields">
+                <div class="input-field-main">
+                    <input class="input-field" id="about_lawsuit" type="text" required>
+                    <label class="input-field-placeholder" id="placeholder-about_lawsuit">Иск о</label>
+                    <label class="warning-label" id="error-about_lawsuit">введите иск о</label>
+                </div>
+
+                <div class="input-field-main">
+                    <textarea class="input-field" id="content_lawsuit" type="text" required></textarea>
+                    <label class="input-field-placeholder" id="placeholder-content_lawsuit">Содержание иска</label>
+                    <label class="warning-label" id="error-content_lawsuit">введите содержание иска</label>
+                </div>
+
+                <div class="input-field-main">
+                    <textarea class="input-field" id="judge_request" type="text" required></textarea>
+                    <label class="input-field-placeholder" id="placeholder-judge_request">Просьба к суду</label>
+                    <label class="warning-label" id="error-judge_request">введите просьбу к суду</label>
+                </div>
+
+                <div class="input-field-main">
+                    <textarea class="input-field" id="application" type="text" required></textarea>
+                    <label class="input-field-placeholder" id="placeholder-application">Содержание приложения</label>
+                    <label class="warning-label" id="error-application">введите содержание приложения</label>
+                </div>
+
+                <div class="input-field-main">
+                    <input class="input-field" id="date" type="date" required max="9999-12-31">
+                    <label class="input-field-placeholder" id="placeholder-date">Дата составления</label>
+                    <label class="warning-label" id="error-date">введите дату составления</label>
+                </div>
+            </div>
+        </div>
+        <div class="doc">
+            <div class="right-doc">
+                <p>Recognized Text: <span id="recognized-text"></span></p>
+                <p class="right-p"><span id="judge_span" style="font-weight:bold" class="right-span"></span></p>
+                <p class="right-p"><span style="font-weight:bold">Истец: </span> <span id="fio_applicant_span"></span></p>
+                <p class="right-p"><span id="address_applicant_span"></span></p>
+                <p class="right-p"><span id="phone_applicant_span"></span></p>
+                <p class="right-p"><span style="font-weight:bold">Ответчик: </span> <span id="fio_defendant_span"></span></p>
+                <p class="right-p"><span id="address_defendant_span"></span></p>
+                <p class="right-p"><span id="phone_defendant_span"></span></p>
+                <p class="right-p"><span style="font-weight:bold">Представитель: </span> <span id="fio_representative_span"></span></p>
+                <p class="right-p"><span id="address_representative_span"></span></p>
+                <p class="right-p"><span id="phone_representative_span"></span></p>
+                <p class="right-p">Цена иска: <span id="cost_lawsuit_span"></span></p>
+            </div>
+            <div class="midle-doc">
+                <p><span style="font-weight:bold">ИСКОВОЕ </span><span style="font-weight:bold"></span><span style="font-weight:bold">ЗАЯВЛЕНИЕ</span></p>
+                <p class="center-p"><span id="about_lawsuit_span" style="font-weight:bold"></span></p>
+                <p class="left-p"><span id="content_lawsuit_span"></span></p>
+                <p><span style="font-weight:bold">ПРОШУ</span><span style="font-weight:bold">:</span></p>
+                <p class="left-p"><span id="judge_request_span"></span></p>
+                <p>Приложение:</p>
+                <p class="left-p"><span id="application_span"></span></p>
+            </div>
+            <div class="right-doc">
+                <p>____________________________/___________________/</p>
+                <p><span id="date_span"></span> г.</p>
+            </div>
+        </div>
+    </div>
+    <footer class="div-audio">
+        <div class="document-btn-div">
+            <button class="btn1" id="saveDocButton">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-cloud-download" viewBox="0 0 16 16">
+                    <path d="M4.406 1.342A5.53 5.53 0 0 1 8 0c2.69 0 4.923 2 5.166 4.579C14.758 4.804 16 6.137 16 7.773 16 9.569 14.502 11 12.687 11H10a.5.5 0 0 1 0-1h2.688C13.979 10 15 8.988 15 7.773c0-1.216-1.02-2.228-2.313-2.228h-.5v-.5C12.188 2.825 10.328 1 8 1a4.53 4.53 0 0 0-2.941 1.1c-.757.652-1.153 1.438-1.153 2.055v.448l-.445.049C2.064 4.805 1 5.952 1 7.318 1 8.785 2.23 10 3.781 10H6a.5.5 0 0 1 0 1H3.781C1.708 11 0 9.366 0 7.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383"/>
+                    <path d="M7.646 15.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 14.293V5.5a.5.5 0 0 0-1 0v8.793l-2.146-2.147a.5.5 0 0 0-.708.708z"/>
+                  </svg>
+                  <p style="margin: 0; margin-left: 10px;">Сохранить<p></p>
+            </button>
+            <button class="btn1" id="createDocButton">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-filetype-docx" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M14 4.5V11h-1V4.5h-2A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v9H2V2a2 2 0 0 1 2-2h5.5zm-6.839 9.688v-.522a1.5 1.5 0 0 0-.117-.641.86.86 0 0 0-.322-.387.86.86 0 0 0-.469-.129.87.87 0 0 0-.471.13.87.87 0 0 0-.32.386 1.5 1.5 0 0 0-.117.641v.522q0 .384.117.641a.87.87 0 0 0 .32.387.9.9 0 0 0 .471.126.9.9 0 0 0 .469-.126.86.86 0 0 0 .322-.386 1.55 1.55 0 0 0 .117-.642m.803-.516v.513q0 .563-.205.973a1.47 1.47 0 0 1-.589.627q-.381.216-.917.216a1.86 1.86 0 0 1-.92-.216 1.46 1.46 0 0 1-.589-.627 2.15 2.15 0 0 1-.205-.973v-.513q0-.569.205-.975.205-.411.59-.627.386-.22.92-.22.535 0 .916.22.383.219.59.63.204.406.204.972M1 15.925v-3.999h1.459q.609 0 1.005.235.396.233.589.68.196.445.196 1.074 0 .634-.196 1.084-.197.451-.595.689-.396.237-.999.237zm1.354-3.354H1.79v2.707h.563q.277 0 .483-.082a.8.8 0 0 0 .334-.252q.132-.17.196-.422a2.3 2.3 0 0 0 .068-.592q0-.45-.118-.753a.9.9 0 0 0-.354-.454q-.237-.152-.61-.152Zm6.756 1.116q0-.373.103-.633a.87.87 0 0 1 .301-.398.8.8 0 0 1 .475-.138q.225 0 .398.097a.7.7 0 0 1 .273.26.85.85 0 0 1 .12.381h.765v-.073a1.33 1.33 0 0 0-.466-.964 1.4 1.4 0 0 0-.49-.272 1.8 1.8 0 0 0-.606-.097q-.534 0-.911.223-.375.222-.571.633-.197.41-.197.978v.498q0 .568.194.976.195.406.571.627.375.216.914.216.44 0 .785-.164t.551-.454a1.27 1.27 0 0 0 .226-.674v-.076h-.765a.8.8 0 0 1-.117.364.7.7 0 0 1-.273.248.9.9 0 0 1-.401.088.85.85 0 0 1-.478-.131.83.83 0 0 1-.298-.393 1.7 1.7 0 0 1-.103-.627zm5.092-1.76h.894l-1.275 2.006 1.254 1.992h-.908l-.85-1.415h-.035l-.852 1.415h-.862l1.24-2.015-1.228-1.984h.932l.832 1.439h.035z"/>
+                  </svg>          
+                  <p style="margin: 0; margin-left: 10px;">Скачать<p>
+            </button>
+        </div>
+        <canvas id="oscilloscope"></canvas>
+        <div class="mic-buttons">
+            <div class="sub-mic-buttons">
+                <button onclick="startListening()" class="sound-btn-on">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-mic-fill" viewBox="0 0 16 16">
+                    <path d="M5 3a3 3 0 0 1 6 0v5a3 3 0 0 1-6 0z"/>
+                    <path d="M3.5 6.5A.5.5 0 0 1 4 7v1a4 4 0 0 0 8 0V7a.5.5 0 0 1 1 0v1a5 5 0 0 1-4.5 4.975V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 .5-.5"/>
+                </svg>
+                <p style="margin: 0; margin-left: 10px;">Включить голосовой ввод</p>
+                </button>
+                <button onclick="stopListening()" class="sound-btn-off">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-mic-mute-fill" viewBox="0 0 16 16">
+                    <path d="M13 8c0 .564-.094 1.107-.266 1.613l-.814-.814A4 4 0 0 0 12 8V7a.5.5 0 0 1 1 0zm-5 4c.818 0 1.578-.245 2.212-.667l.718.719a5 5 0 0 1-2.43.923V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 1 0v1a4 4 0 0 0 4 4m3-9v4.879L5.158 2.037A3.001 3.001 0 0 1 11 3"/>
+                    <path d="M9.486 10.607 5 6.12V8a3 3 0 0 0 4.486 2.607m-7.84-9.253 12 12 .708-.708-12-12z"/>
+                </svg>
+                <p style="margin: 0; margin-left: 10px;">Выключить голосовой ввод</p>
+                </button>
+            </div>
+            <p class="p-status">Состояние: <span class="status" id="status"></span></p>
+        </div>
+    </footer>
+</body>
+
+</html>
